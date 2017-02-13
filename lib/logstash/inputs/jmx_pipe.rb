@@ -258,9 +258,9 @@ class LogStash::Inputs::JmxPipe < LogStash::Inputs::Base
           resubscribe_to_notifications jmx_connection
 
           @queries.each do |query|
+            values = event_context.clone
             any_commit_done = FALSE
             query['objects'].each_entry do |bean_name, attr_spec|
-              values = event_context.clone
               jmx_objects = JMX::MBean.find_all_by_name bean_name, :connection => jmx_connection
               if jmx_objects.length > 0
                 if query['objects'].length > 1 and jmx_objects.length > 1
@@ -377,7 +377,7 @@ class LogStash::Inputs::JmxPipe < LogStash::Inputs::Base
   private
   def query(jmx_connection, jmx_object, attr_spec, result_values)
     attr_names = attr_spec.select{|attr_path, _| not attr_path.start_with?('=')}.keys.map{|attr_path| attr_path.split('.')[0]}
-    attr_values = attr_names.empty? ? [] : values = jmx_connection.getAttributes(jmx_object.object_name, attr_names)
+    attr_values = attr_names.empty? ? [] : jmx_connection.getAttributes(jmx_object.object_name, attr_names)
     attr_values_hash = Hash[attr_values.collect{|a| [a.getName, a.getValue]}]
 
     attr_spec.each_entry do |attr_path, attr_alias|
