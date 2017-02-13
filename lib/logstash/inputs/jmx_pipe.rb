@@ -4,7 +4,7 @@ require "logstash/namespace"
 require 'jdk_helper'
 require 'jmx4r'
 
-# A LogStash input plugin for connecting to JMX endpoints to periodically gather MBean attribute values and to subscribe
+# A Logstash input plugin for connecting to JMX endpoints to periodically gather MBean attribute values and to subscribe
 # to JMX notifications and logging those as events.
 #
 # This plugin was written after logstash-input-jmx was found to be, in my opinion, not only insufficient (it lacks
@@ -13,7 +13,7 @@ require 'jmx4r'
 # * It spawns no additional threads it would have to manage. Instead, user is required to configure multiple instances of the
 #   plugin to monitor multiple JMX endpoints (or even if she wishes to distribute the load to multiple threads.)
 # * It allows (and indeed requires) original MBean attribute names to be specified, not the snake_cased_ones.
-# * It allows multiple MBeans to be queried to produce one LogStash event, or, alternatively, querying multiple MBeans using
+# * It allows multiple MBeans to be queried to produce one Logstash event, or, alternatively, querying multiple MBeans using
 #   wildcards and producing multiple events at once.
 # * It allows logging values from the MBean object name key-value property pairs.
 #
@@ -92,8 +92,8 @@ require 'jmx4r'
 # * One or more object name patterns are listed in the `objects` hash and at most one of each is found. Then, a single event
 #   is emitted with the property `name` set to the value of the query's `name` configuration key. Other properties of the
 #   event contain values of the MBeans' attributes as the values of the `objects` has specify. Each entry in the hash for
-#   each object name pattern contains a mapping from MBean attribute name (as the key) to the LogStash event property name
-#   (as the value). `"ResourcesInUse" => "WebWorkerThreadsIsUse"` thus means the LogStash event will have a property named
+#   each object name pattern contains a mapping from MBean attribute name (as the key) to the Logstash event property name
+#   (as the value). `"ResourcesInUse" => "WebWorkerThreadsIsUse"` thus means the Logstash event will have a property named
 #   `WebWorkerThreadsInUse` that will carry the value of the `ResourceInUse` attribute of the found MBean.
 # * One object name pattern containing wildcard(s) is listed in the `objects` hash and multiple MBeans have been found. Then
 #   for each found object an event is emitted, carrying its attributes' values as properties as configured.
@@ -109,11 +109,11 @@ require 'jmx4r'
 # ==== The `subscriptions` configuration key
 #
 # This plugin can subscribe to notifications that are emitted by the MBeans. At the moment, no filtering is supported.
-# Filtering can be done later in the LogStash pipeline, although that is hardly a good solution: there is a good reason the
+# Filtering can be done later in the Logstash pipeline, although that is hardly a good solution: there is a good reason the
 # JMX notification subscription mechanism natively supports filtering.
 #
 # `subscriptions` is an optional list of hashes with the following attributes.
-# * `name` is a string that is set as a value of the `name` property on each emitted LogStash event.
+# * `name` is a string that is set as a value of the `name` property on each emitted Logstash event.
 # * `object` is an object name pattern for locating the object to which a subscription is to be made. Note that if multiple
 #   objects are found, a subscription is made to all of them!
 # * `attributes` is a hash that describes a mapping of notification attributes' names (the keys) to event property names
@@ -130,7 +130,7 @@ require 'jmx4r'
 # ==== Using a secure (SSL) JMX connection
 #
 # If the JMX endpoint requires a secure connection (which it should), the truststore with the server's public key must be
-# presented to the JVM in which LogStash runs. LogStash should be run with the following parameter in the `JAVA_OPTS`
+# presented to the JVM in which Logstash runs. Logstash should be run with the following parameter in the `JAVA_OPTS`
 # environment variable: `-Djavax.net.ssl.trustStore=/etc/logstash/jmx.truststore`, where the given file is the truststore
 # with all the needed public keys.
 
