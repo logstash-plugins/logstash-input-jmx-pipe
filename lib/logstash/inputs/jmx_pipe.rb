@@ -167,7 +167,7 @@ class LogStash::Inputs::JmxPipe < LogStash::Inputs::Base
     @stop_event = Concurrent::Event::new
     @subscriptions_to_add = @subscriptions.clone
 
-    @next_iteration = Time::now + @interval
+    @next_iteration = Time::now + (@interval / 1000.to_f)
   end
 
   private
@@ -356,20 +356,22 @@ class LogStash::Inputs::JmxPipe < LogStash::Inputs::Base
 
   private
   def sleep_until_next_iteration
+    interval_seconds = @interval / 1000.to_f
+
     sleep_time = @next_iteration - Time::now
     if sleep_time < 0
-      skip_iterations = (-sleep_time / @interval).to_i
+      skip_iterations = (-sleep_time / interval_seconds).to_i
       @logger.warn ("Overshot the planned iteration time for #{(-sleep_time).to_s} seconds" +
           (skip_iterations > 0 ? ', skipping ' + skip_iterations.to_s + ' iterations' : '') +
           ', querying immediately!')
-      @next_iteration += skip_iterations * @interval
+      @next_iteration += skip_iterations * interval_seconds
     end
 
     if sleep_time > 0
       @logger.debug "Sleeping for #{sleep_time.to_s} seconds."
       @stop_event.wait(sleep_time)
     end
-    @next_iteration += @interval
+    @next_iteration += interval_seconds
   end
 
   private
